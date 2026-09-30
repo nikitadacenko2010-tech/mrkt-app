@@ -2,47 +2,53 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Моковые данные NFT подарков из оригинала
+// Карточки NFT-подарков с качественными PNG-изображениями
 const INITIAL_MARKET_ITEMS = [
   {
     id: 1,
     name: 'Chill Flame',
     number: '#362097',
     price: 3.37,
-    image: '🔥',
-    bgGradient: 'from-sky-400 to-blue-600',
+    // Используем качественные 3D-иллюстрации NFT
+    imageUrl: 'https://cdn-icons-png.flaticon.com/512/426/426833.png', 
+    bgGradient: 'from-sky-500/80 via-blue-600/60 to-indigo-900/90',
+    badgeIcon: '☘️'
   },
   {
     id: 2,
     name: 'Vice Cream',
     number: '#311925',
     price: 3.46,
-    image: '🍦',
-    bgGradient: 'from-emerald-400 to-teal-600',
+    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3159/3159066.png', 
+    bgGradient: 'from-emerald-500/80 via-teal-600/60 to-slate-900/90',
+    badgeIcon: '☘️'
   },
   {
     id: 3,
     name: 'Orange Ice',
     number: '#102941',
     price: 2.80,
-    image: '🍧',
-    bgGradient: 'from-emerald-300 to-teal-500',
+    imageUrl: 'https://cdn-icons-png.flaticon.com/512/2553/2553691.png', 
+    bgGradient: 'from-amber-500/80 via-orange-600/60 to-zinc-900/90',
+    badgeIcon: '☘️'
   },
   {
     id: 4,
     name: 'Berry Delight',
     number: '#882103',
     price: 4.10,
-    image: '🧁',
-    bgGradient: 'from-amber-500 to-orange-600',
+    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3159/3159025.png', 
+    bgGradient: 'from-rose-500/80 via-pink-600/60 to-neutral-900/90',
+    badgeIcon: '☘️'
   },
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('market'); // market | orders | hub | tasks | storage
+  const [activeTab, setActiveTab] = useState('market');
   const [category, setCategory] = useState('gifts');
   const [searchQuery, setSearchQuery] = useState('');
   const [balance, setBalance] = useState(0);
+  const [selectedNft, setSelectedNft] = useState(null);
 
   useEffect(() => {
     if (tg) {
@@ -60,7 +66,6 @@ export default function App() {
           <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center overflow-hidden">
             <span className="text-xs">🗿</span>
           </div>
-          {/* Баланс TON */}
           <div className="flex items-center gap-1 bg-[#1c1c1e] px-2.5 py-1 rounded-full border border-neutral-800">
             <span className="text-xs">💎</span>
             <span className="text-xs font-bold">{balance}</span>
@@ -70,7 +75,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Правые иконки */}
         <div className="flex items-center gap-3 text-neutral-400">
           <button className="hover:text-white">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +107,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* 3. КАТЕГОРИИ (Подарки, Звезды и т.д.) */}
+      {/* 3. КАТЕГОРИИ */}
       <div className="px-3 flex gap-2 overflow-x-auto no-scrollbar py-1">
         <button
           onClick={() => setCategory('gifts')}
@@ -139,7 +143,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* 5. ФИЛЬТРЫ (NFT, Модель, Фон...) */}
+      {/* 5. ФИЛЬТРЫ */}
       <div className="px-3 mt-2 flex gap-1.5 overflow-x-auto no-scrollbar">
         <button className="p-2 bg-[#1c1c1e] rounded-lg text-neutral-400 text-xs">⚡</button>
         <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
@@ -156,30 +160,31 @@ export default function App() {
         </button>
       </div>
 
-      {/* 6. СЕТКА NFT ПОДАРКОВ */}
+      {/* 6. СЕТКА NFT С РЕАЛЬНЫМИ ИЗОБРАЖЕНИЯМИ */}
       <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
         {INITIAL_MARKET_ITEMS.map((item) => (
           <div
             key={item.id}
-            className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between"
+            onClick={() => setSelectedNft(item)}
+            className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between active:scale-95 transition-transform cursor-pointer"
           >
-            {/* Картинка NFT с градиентом и паттерном */}
-            <div className={`h-40 bg-gradient-to-tr ${item.bgGradient} relative flex items-center justify-center text-6xl shadow-inner`}>
-              <span className="drop-shadow-lg">{item.image}</span>
-              {/* Значок типа подарка справа вверху */}
-              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-[10px]">
-                ☘️
+            {/* Отрисовка NFT с градиентным фоном и тенью */}
+            <div className={`h-40 bg-gradient-to-tr ${item.bgGradient} relative flex items-center justify-center p-4`}>
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                className="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transform hover:scale-110 transition-transform duration-300"
+              />
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-[10px]">
+                {item.badgeIcon}
               </div>
             </div>
 
-            {/* Описание */}
             <div className="p-2.5">
               <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
               <p className="text-[10px] text-neutral-500 mt-0.5">{item.number}</p>
 
-              {/* Цена и Кнопки */}
               {item.id === 4 ? (
-                /* Кнопка "Купить оптом" как на скрине */
                 <button className="mt-2 w-full py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-neutral-200 transition-colors">
                   <span>🛒</span> Купить оптом
                 </button>
@@ -200,54 +205,64 @@ export default function App() {
         ))}
       </main>
 
-      {/* 7. НИЖНЯЯ НАВИГАЦИЯ (BOTTOM BAR) */}
+      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЬНОГО ПРОСМОТРА NFT */}
+      {selectedNft && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
+          <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center animate-slide-up">
+            <div className={`w-36 h-36 mx-auto rounded-2xl bg-gradient-to-tr ${selectedNft.bgGradient} p-4 flex items-center justify-center mb-4 shadow-2xl`}>
+              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain filter drop-shadow-xl" />
+            </div>
+
+            <h2 className="text-lg font-bold">{selectedNft.name}</h2>
+            <p className="text-xs text-neutral-500 mt-0.5">{selectedNft.number}</p>
+
+            <div className="my-5 p-3 bg-neutral-900/90 rounded-2xl border border-neutral-800 flex justify-between items-center text-sm">
+              <span className="text-neutral-400">Текущая цена:</span>
+              <span className="font-bold text-white flex items-center gap-1">
+                💎 {selectedNft.price} TON
+              </span>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setSelectedNft(null)}
+                className="flex-1 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold transition-colors"
+              >
+                Закрыть
+              </button>
+              <button
+                onClick={() => {
+                  alert(`Запрос на покупку ${selectedNft.name} отправлен`);
+                  setSelectedNft(null);
+                }}
+                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-semibold shadow-lg transition-colors"
+              >
+                Купить сейчас
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. НИЖНЯЯ НАВИГАЦИЯ */}
       <nav className="fixed bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-neutral-800 px-2 py-2 flex justify-around z-40">
-        <button
-          onClick={() => setActiveTab('market')}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === 'market' ? 'text-white font-bold' : 'text-neutral-500'
-          }`}
-        >
+        <button onClick={() => setActiveTab('market')} className={`flex flex-col items-center gap-1 ${activeTab === 'market' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">░░</span>
           <span className="text-[10px]">Маркет</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('orders')}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === 'orders' ? 'text-white font-bold' : 'text-neutral-500'
-          }`}
-        >
+        <button onClick={() => setActiveTab('orders')} className={`flex flex-col items-center gap-1 ${activeTab === 'orders' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">📋</span>
           <span className="text-[10px]">Ордеры</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('hub')}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === 'hub' ? 'text-white font-bold' : 'text-neutral-500'
-          }`}
-        >
+        <button onClick={() => setActiveTab('hub')} className={`flex flex-col items-center gap-1 ${activeTab === 'hub' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">🎮</span>
           <span className="text-[10px]">Игровой хаб</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('tasks')}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === 'tasks' ? 'text-white font-bold' : 'text-neutral-500'
-          }`}
-        >
+        <button onClick={() => setActiveTab('tasks')} className={`flex flex-col items-center gap-1 ${activeTab === 'tasks' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">🤖</span>
           <span className="text-[10px]">Задания</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('storage')}
-          className={`flex flex-col items-center gap-1 ${
-            activeTab === 'storage' ? 'text-white font-bold' : 'text-neutral-500'
-          }`}
-        >
+        <button onClick={() => setActiveTab('storage')} className={`flex flex-col items-center gap-1 ${activeTab === 'storage' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">📦</span>
           <span className="text-[10px]">Хранилище</span>
         </button>
