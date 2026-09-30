@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Полная коллекция подарков точно по вашим скриншотам из Telegram
+// Уникальные виды NFT со скриншотов с индивидуальными фонами и ассетами
 const BASE_COLLECTIONS = [
-  // Скриншот 2:
   {
     name: 'Snoop Dogg',
     prefix: 'SnoopDogg',
     badgeIcon: '🕶️',
     baseStars: 691,
+    gradient: 'from-amber-900/60 via-amber-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/SnoopDogg-1.webp'
   },
   {
@@ -17,120 +17,23 @@ const BASE_COLLECTIONS = [
     prefix: 'StatueOfLiberty',
     badgeIcon: '🗽',
     baseStars: 615,
+    gradient: 'from-emerald-900/60 via-teal-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/StatueOfLiberty-1.webp'
-  },
-  {
-    name: 'Coffee Cup',
-    prefix: 'CoffeeCup',
-    badgeIcon: '☕',
-    baseStars: 515,
-    imageUrl: 'https://nft.fragment.com/gift/CoffeeCup-1.webp'
-  },
-  {
-    name: 'Noodles',
-    prefix: 'Noodles',
-    badgeIcon: '🍜',
-    baseStars: 490,
-    imageUrl: 'https://nft.fragment.com/gift/Noodles-1.webp'
-  },
-  {
-    name: 'Lollipop',
-    prefix: 'Lollipop',
-    badgeIcon: '🍭',
-    baseStars: 550,
-    imageUrl: 'https://nft.fragment.com/gift/Lollipop-1.webp'
   },
   {
     name: 'Ice Cream',
     prefix: 'IceCream',
     badgeIcon: '🍦',
     baseStars: 515,
+    gradient: 'from-sky-900/60 via-cyan-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/IceCream-1.webp'
-  },
-  {
-    name: 'Flamingo',
-    prefix: 'Flamingo',
-    badgeIcon: '🦩',
-    baseStars: 518,
-    imageUrl: 'https://nft.fragment.com/gift/Flamingo-1.webp'
-  },
-  {
-    name: 'Backpack',
-    prefix: 'Backpack',
-    badgeIcon: '🎒',
-    baseStars: 598,
-    imageUrl: 'https://nft.fragment.com/gift/Backpack-1.webp'
-  },
-  {
-    name: 'Christmas Sock',
-    prefix: 'ChristmasSock',
-    badgeIcon: '🧦',
-    baseStars: 499,
-    imageUrl: 'https://nft.fragment.com/gift/ChristmasSock-1.webp'
-  },
-  {
-    name: 'Green Bag',
-    prefix: 'GreenBag',
-    badgeIcon: '💼',
-    baseStars: 691,
-    imageUrl: 'https://nft.fragment.com/gift/GreenBag-1.webp'
-  },
-  {
-    name: 'Snake 2025',
-    prefix: 'Snake2025',
-    badgeIcon: '🐍',
-    baseStars: 485,
-    imageUrl: 'https://nft.fragment.com/gift/Snake2025-1.webp'
-  },
-  {
-    name: 'Poop',
-    prefix: 'Poop',
-    badgeIcon: '💩',
-    baseStars: 575,
-    imageUrl: 'https://nft.fragment.com/gift/Poop-1.webp'
-  },
-  {
-    name: 'March 8 Cupcake',
-    prefix: 'March8Cupcake',
-    badgeIcon: '🧁',
-    baseStars: 500,
-    imageUrl: 'https://nft.fragment.com/gift/March8Cupcake-1.webp'
-  },
-  {
-    name: 'Candy Cane',
-    prefix: 'CandyCane',
-    badgeIcon: '🍬',
-    baseStars: 500,
-    imageUrl: 'https://nft.fragment.com/gift/CandyCane-1.webp'
-  },
-  {
-    name: 'Four Leaf Clover',
-    prefix: 'FourLeafClover',
-    badgeIcon: '🍀',
-    baseStars: 691,
-    imageUrl: 'https://nft.fragment.com/gift/FourLeafClover-1.webp'
-  },
-
-  // Скриншот 1:
-  {
-    name: 'Pretzel',
-    prefix: 'Pretzel',
-    badgeIcon: '🥨',
-    baseStars: 691,
-    imageUrl: 'https://nft.fragment.com/gift/Pretzel-1.webp'
-  },
-  {
-    name: 'Happy Birthday',
-    prefix: 'HappyBirthday',
-    badgeIcon: '🎂',
-    baseStars: 690,
-    imageUrl: 'https://nft.fragment.com/gift/HappyBirthday-1.webp'
   },
   {
     name: 'Cake',
     prefix: 'Cake',
     badgeIcon: '🍰',
     baseStars: 650,
+    gradient: 'from-pink-900/60 via-rose-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/Cake-1.webp'
   },
   {
@@ -138,34 +41,23 @@ const BASE_COLLECTIONS = [
     prefix: 'JesterHat',
     badgeIcon: '🃏',
     baseStars: 500,
+    gradient: 'from-purple-900/60 via-indigo-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/JesterHat-1.webp'
   },
   {
-    name: 'Snake Gift',
-    prefix: 'SnakeGift',
+    name: 'Snake 2025',
+    prefix: 'Snake2025',
     badgeIcon: '🐍',
-    baseStars: 499,
-    imageUrl: 'https://nft.fragment.com/gift/SnakeGift-1.webp'
-  },
-  {
-    name: 'Gold Medal',
-    prefix: 'GoldMedal',
-    badgeIcon: '🥇',
-    baseStars: 650,
-    imageUrl: 'https://nft.fragment.com/gift/GoldMedal-1.webp'
-  },
-  {
-    name: 'Easter Bunny',
-    prefix: 'EasterBunny',
-    badgeIcon: '🐰',
-    baseStars: 691,
-    imageUrl: 'https://nft.fragment.com/gift/EasterBunny-1.webp'
+    baseStars: 485,
+    gradient: 'from-green-900/60 via-emerald-950 to-black',
+    imageUrl: 'https://nft.fragment.com/gift/Snake2025-1.webp'
   },
   {
     name: 'Cigar',
     prefix: 'Cigar',
     badgeIcon: '🚬',
     baseStars: 1528,
+    gradient: 'from-orange-900/60 via-amber-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/Cigar-1.webp'
   },
   {
@@ -173,6 +65,7 @@ const BASE_COLLECTIONS = [
     prefix: 'Sparkler',
     badgeIcon: '✨',
     baseStars: 600,
+    gradient: 'from-yellow-900/60 via-amber-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/Sparkler-1.webp'
   },
   {
@@ -180,6 +73,7 @@ const BASE_COLLECTIONS = [
     prefix: 'MoneyBouquet',
     badgeIcon: '💐',
     baseStars: 687,
+    gradient: 'from-lime-900/60 via-emerald-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/MoneyBouquet-1.webp'
   },
   {
@@ -187,6 +81,7 @@ const BASE_COLLECTIONS = [
     prefix: 'LightSaber',
     badgeIcon: '⚔️',
     baseStars: 691,
+    gradient: 'from-blue-900/60 via-indigo-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/LightSaber-1.webp'
   },
   {
@@ -194,17 +89,35 @@ const BASE_COLLECTIONS = [
     prefix: 'MagicBook',
     badgeIcon: '📖',
     baseStars: 550,
+    gradient: 'from-violet-900/60 via-purple-950 to-black',
     imageUrl: 'https://nft.fragment.com/gift/MagicBook-1.webp'
+  },
+  {
+    name: 'Flamingo',
+    prefix: 'Flamingo',
+    badgeIcon: '🦩',
+    baseStars: 518,
+    gradient: 'from-fuchsia-900/60 via-pink-950 to-black',
+    imageUrl: 'https://nft.fragment.com/gift/Flamingo-1.webp'
   }
 ];
 
-// Генерация массива: РОВНО ПО 50 ЭКЗЕМПЛЯРОВ каждого NFT из скриншотов
+// Разные типы узоров для уникальности каждого экземпляра
+const PATTERNS = [
+  'bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]',
+  'bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:12px_12px]',
+  'bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_14px]',
+  'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]'
+];
+
+// Генерация: 50 УНИКАЛЬНЫХ ЭКЗЕМПЛЯРОВ ДЛЯ КАЖДОГО ВИДА NFT
 const GENERATED_NFT_ITEMS = [];
 
 BASE_COLLECTIONS.forEach((col, colIdx) => {
   for (let i = 1; i <= 50; i++) {
     const itemNumber = (colIdx + 1) * 1000 + i;
-    const starsVariation = col.baseStars + (i % 15) * 5;
+    const starsVariation = col.baseStars + (i % 20) * 12;
+    const pattern = PATTERNS[i % PATTERNS.length];
 
     GENERATED_NFT_ITEMS.push({
       id: `${col.prefix}-${itemNumber}`,
@@ -215,6 +128,9 @@ BASE_COLLECTIONS.forEach((col, colIdx) => {
       link: `https://t.me/nft/${col.prefix}-${itemNumber}`,
       imageUrl: col.imageUrl,
       badgeIcon: col.badgeIcon,
+      gradient: col.gradient,
+      pattern: pattern,
+      modelIndex: (i % 5) + 1 // Вариация модели
     });
   }
 });
@@ -225,7 +141,7 @@ export default function App() {
   const [selectedType, setSelectedType] = useState('all');
   const [balance, setBalance] = useState(231);
   const [selectedNft, setSelectedNft] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(24);
+  const [visibleCount, setVisibleCount] = useState(20);
 
   useEffect(() => {
     if (tg) {
@@ -247,7 +163,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#121212] text-white font-sans pb-24 select-none">
-      {/* 1. ВЕРХНЯЯ ШАПКА КАК В TELEGRAM */}
+      {/* 1. ВЕРХНЯЯ ШАПКА */}
       <header className="px-4 py-3 flex items-center justify-between border-b border-neutral-800/60 sticky top-0 bg-[#121212]/95 backdrop-blur-md z-30">
         <div className="flex items-center gap-2">
           <button className="text-neutral-400 text-lg">✕</button>
@@ -262,7 +178,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* 2. ПОИСК И КАТЕГОРИИ (ПО 50 ШТУК В КАЖДОЙ) */}
+      {/* 2. ПОИСК И ФИЛЬТРЫ */}
       <div className="px-3 mt-3 flex flex-col gap-2">
         <div className="bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
           <span className="text-neutral-500 text-sm">🔍</span>
@@ -275,10 +191,9 @@ export default function App() {
           />
         </div>
 
-        {/* Скролл фильтра с подсчетом по 50 шт */}
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
           <button
-            onClick={() => { setSelectedType('all'); setVisibleCount(24); }}
+            onClick={() => { setSelectedType('all'); setVisibleCount(20); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
               selectedType === 'all'
                 ? 'bg-neutral-800 text-white border border-neutral-700'
@@ -290,7 +205,7 @@ export default function App() {
           {BASE_COLLECTIONS.map((col) => (
             <button
               key={col.prefix}
-              onClick={() => { setSelectedType(col.prefix); setVisibleCount(24); }}
+              onClick={() => { setSelectedType(col.prefix); setVisibleCount(20); }}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
                 selectedType === col.prefix
                   ? 'bg-neutral-800 text-white border border-neutral-700'
@@ -303,21 +218,30 @@ export default function App() {
         </div>
       </div>
 
-      {/* 3. СЕТКА NFT-ПОДАРКОВ (КАК В ОРИГИНАЛЬНОМ ИНТЕРФЕЙСЕ) */}
-      <main className="px-3 mt-3 grid grid-cols-3 gap-2">
+      {/* 3. СЕТКА КАРТОЧЕК: ФОТО ВО ВЕСЬ БЛОК И РАЗНЫЕ ФОНЫ */}
+      <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
         {displayedItems.map((item) => (
           <div
             key={item.id}
             onClick={() => setSelectedNft(item)}
-            className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl p-2.5 flex flex-col items-center justify-between relative active:scale-95 transition-transform cursor-pointer aspect-square"
+            className="relative h-64 rounded-2xl overflow-hidden border border-neutral-800/80 active:scale-95 transition-transform cursor-pointer group flex flex-col justify-between"
           >
+            {/* Градиентный индивидуальный фон + паттерн */}
+            <div className={`absolute inset-0 bg-gradient-to-b ${item.gradient}`} />
+            <div className={`absolute inset-0 opacity-20 ${item.pattern}`} />
+
             {/* Плашка Маркет */}
-            <div className="absolute top-0 right-0 bg-emerald-500/80 text-[8px] font-bold px-1.5 py-0.5 rounded-bl-lg rounded-tr-xl uppercase tracking-wider text-black">
+            <div className="absolute top-2 left-2 bg-emerald-500/90 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider text-black z-10 backdrop-blur-sm">
               маркет
             </div>
 
-            {/* Картинка NFT */}
-            <div className="w-16 h-16 flex items-center justify-center my-auto">
+            {/* Иконка визитка */}
+            <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-xs z-10 border border-white/10">
+              {item.badgeIcon}
+            </div>
+
+            {/* NFT Модель во весь центр карточки */}
+            <div className="relative w-full h-full flex items-center justify-center p-4 z-0">
               <img
                 src={item.imageUrl}
                 alt={item.name}
@@ -325,14 +249,23 @@ export default function App() {
                   e.target.onerror = null;
                   e.target.src = 'https://nft.fragment.com/gift/SnoopDogg-1.webp';
                 }}
-                className="max-w-full max-h-full object-contain filter drop-shadow-md"
+                className="max-w-full max-h-full object-contain filter drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-300"
               />
             </div>
 
-            {/* Цена в звездах */}
-            <div className="flex items-center gap-1 text-[11px] font-bold text-amber-400 mt-1">
-              <span>⭐</span>
-              <span>{item.stars}+</span>
+            {/* Информация внизу на затемненном фоне */}
+            <div className="relative z-10 p-3 bg-gradient-to-t from-black via-black/80 to-transparent pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
+                  <p className="text-[10px] text-neutral-400 mt-0.5">{item.number} • Model #{item.modelIndex}</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-1 text-xs font-bold text-amber-400">
+                    <span>⭐</span> {item.stars}+
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -342,7 +275,7 @@ export default function App() {
       {visibleCount < filteredItems.length && (
         <div className="px-3 mt-4 text-center">
           <button
-            onClick={() => setVisibleCount((prev) => prev + 24)}
+            onClick={() => setVisibleCount((prev) => prev + 20)}
             className="w-full py-3 bg-[#1c1c1e] hover:bg-neutral-800 border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-300 transition-colors"
           >
             Загрузить еще ({filteredItems.length - visibleCount} осталось)
@@ -350,19 +283,20 @@ export default function App() {
         </div>
       )}
 
-      {/* 4. МОДАЛЬНОЕ ОКНО ПРОСМОТРА ПОДАРКА */}
+      {/* 4. МОДАЛЬНОЕ ОКНО */}
       {selectedNft && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
           <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center">
-            <div className="w-28 h-28 mx-auto rounded-2xl p-2 flex items-center justify-center mb-3 bg-neutral-900 border border-neutral-800">
-              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain" />
+            <div className={`w-full h-64 mx-auto rounded-2xl relative overflow-hidden mb-4 border border-neutral-800 flex items-center justify-center bg-gradient-to-b ${selectedNft.gradient}`}>
+              <div className={`absolute inset-0 opacity-20 ${selectedNft.pattern}`} />
+              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-48 max-w-full object-contain filter drop-shadow-2xl z-10" />
             </div>
 
-            <h2 className="text-base font-bold">{selectedNft.name}</h2>
-            <p className="text-xs text-neutral-500 mt-0.5">{selectedNft.number}</p>
+            <h2 className="text-lg font-bold">{selectedNft.name}</h2>
+            <p className="text-xs text-neutral-400 mt-0.5">{selectedNft.number} (Разновидность #{selectedNft.modelIndex})</p>
 
             <div className="my-4 p-3 bg-neutral-900 rounded-2xl border border-neutral-800 flex justify-between items-center text-sm">
-              <span className="text-neutral-400 text-xs">Стоимость подарка:</span>
+              <span className="text-neutral-400 text-xs">Цена предложения:</span>
               <span className="font-bold text-amber-400 flex items-center gap-1 text-xs">
                 ⭐ {selectedNft.stars} Stars
               </span>
@@ -381,7 +315,7 @@ export default function App() {
                 rel="noreferrer"
                 className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-1"
               >
-                Отправить в Telegram
+                Купить на маркете
               </a>
             </div>
           </div>
