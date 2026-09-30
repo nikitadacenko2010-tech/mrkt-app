@@ -2,52 +2,41 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Карточки с настоящими 3D NFT-ассетами Telegram Gifts
+// Карточки с указанными вами NFT подарками из Telegram (Fragment)
 const INITIAL_MARKET_ITEMS = [
   {
     id: 1,
-    name: 'Chill Flame',
-    number: '#362097',
-    price: 3.37,
-    // Настоящая 3D модель/картинка факела
-    imageUrl: 'https://nft.fragment.com/gift/chill-flame.webp', 
-    fallbackUrl: 'https://cache.tonapi.io/imgproxy/QmX9P.../fill/500/500/ce/1/aHR0cHM6Ly9mcmFnbWVudC5jb20...png',
-    bgPattern: 'radial-gradient(circle at center, #2563eb 0%, #0f172a 100%)',
-    bgGradient: 'from-sky-500/80 via-blue-600/60 to-indigo-900/90',
-    badgeIcon: '☘️️'
+    name: 'Snow Globe',
+    number: '#1463',
+    price: 15.50,
+    link: 'https://t.me/nft/SnowGlobe-1463',
+    // Превью NFT SnowGlobe с Fragment
+    imageUrl: 'https://nft.fragment.com/gift/SnowGlobe-1463.webp', 
+    bgPattern: 'radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%)',
+    badgeIcon: '❄️'
   },
   {
     id: 2,
-    name: 'Vice Cream',
-    number: '#311925',
-    price: 3.46,
-    // Настоящая 3D модель мороженого
-    imageUrl: 'https://nft.fragment.com/gift/vice-cream.webp', 
-    fallbackUrl: 'https://cache.tonapi.io/imgproxy/...',
-    bgPattern: 'radial-gradient(circle at center, #059669 0%, #064e3b 100%)',
-    bgGradient: 'from-emerald-500/80 via-teal-600/60 to-slate-900/90',
-    badgeIcon: '☘️'
+    name: 'Party Sparkler',
+    number: '#118452',
+    price: 4.20,
+    link: 'https://t.me/nft/PartySparkler-118452',
+    // Превью NFT PartySparkler с Fragment
+    imageUrl: 'https://nft.fragment.com/gift/PartySparkler-118452.webp', 
+    bgPattern: 'radial-gradient(circle at center, #854d0e 0%, #1a1003 100%)',
+    badgeIcon: '✨'
   },
   {
     id: 3,
-    name: 'Orange Ice',
-    number: '#102941',
-    price: 2.80,
-    imageUrl: 'https://nft.fragment.com/gift/orange-ice.webp', 
-    bgPattern: 'radial-gradient(circle at center, #d97706 0%, #451a03 100%)',
-    bgGradient: 'from-amber-500/80 via-orange-600/60 to-zinc-900/90',
-    badgeIcon: '☘️'
-  },
-  {
-    id: 4,
-    name: 'Berry Delight',
-    number: '#882103',
-    price: 4.10,
-    imageUrl: 'https://nft.fragment.com/gift/vice-cream.webp', 
-    bgPattern: 'radial-gradient(circle at center, #e11d48 0%, #4c0519 100%)',
-    bgGradient: 'from-rose-500/80 via-pink-600/60 to-neutral-900/90',
-    badgeIcon: '☘️'
-  },
+    name: 'Snoop Dogg',
+    number: '#227413',
+    price: 88.00,
+    link: 'https://t.me/nft/SnoopDogg-227413',
+    // Превью NFT SnoopDogg с Fragment
+    imageUrl: 'https://nft.fragment.com/gift/SnoopDogg-227413.webp', 
+    bgPattern: 'radial-gradient(circle at center, #3f6212 0%, #0e1e07 100%)',
+    badgeIcon: '🌿'
+  }
 ];
 
 export default function App() {
@@ -67,7 +56,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#121212] text-white font-sans pb-24 select-none">
-      {/* 1. ВЕРХНЯЯ ШАПКА */}
+      {/* ВЕРХНЯЯ ШАПКА */}
       <header className="px-4 py-3 flex items-center justify-between border-b border-neutral-800/60 sticky top-0 bg-[#121212]/95 backdrop-blur-md z-30">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center overflow-hidden">
@@ -93,81 +82,24 @@ export default function App() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
-          <button className="hover:text-white">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
         </div>
       </header>
 
-      {/* 2. БАННЕР ПЕНАЛЬТИ */}
-      <div className="p-3">
-        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-neutral-900 border border-emerald-800/40 rounded-2xl p-3 flex items-center justify-between relative overflow-hidden">
-          <div>
-            <div className="text-xs font-bold text-emerald-400 tracking-wide uppercase">
-              PENALTY УЖЕ В PLAYHUB
-            </div>
-            <div className="text-xs text-neutral-300 mt-0.5">10 ударов до финала!</div>
-          </div>
-          <div className="text-3xl">⚽</div>
-        </div>
-      </div>
-
-      {/* 3. КАТЕГОРИИ */}
-      <div className="px-3 flex gap-2 overflow-x-auto no-scrollbar py-1">
-        <button
-          onClick={() => setCategory('gifts')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-            category === 'gifts'
-              ? 'bg-neutral-800 text-white border border-neutral-700'
-              : 'bg-[#1c1c1e] text-neutral-400'
-          }`}
-        >
-          <span>🎛️</span> Подарки
-        </button>
-        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">🚶</button>
-        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">⭐</button>
-        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">🖥️</button>
-        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">📣</button>
-        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl ml-auto text-xs">🛒</button>
-      </div>
-
-      {/* 4. ПОИСК И FEED */}
+      {/* КАТЕГОРИИ И ПОИСК */}
       <div className="px-3 mt-3 flex gap-2">
         <div className="flex-1 bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
           <span className="text-neutral-500 text-sm">🔍</span>
           <input
             type="text"
-            placeholder="Поиск по названию NFT / номеру"
+            placeholder="Поиск по названию NFT..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent text-xs text-white placeholder-neutral-500 focus:outline-none w-full"
           />
         </div>
-        <button className="bg-[#1c1c1e] border border-neutral-800/80 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 text-neutral-300">
-          <span>📋</span> Feed
-        </button>
       </div>
 
-      {/* 5. ФИЛЬТРЫ */}
-      <div className="px-3 mt-2 flex gap-1.5 overflow-x-auto no-scrollbar">
-        <button className="p-2 bg-[#1c1c1e] rounded-lg text-neutral-400 text-xs">⚡</button>
-        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
-          NFT <span className="text-[9px]">▼</span>
-        </button>
-        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
-          Модель <span className="text-[9px]">▼</span>
-        </button>
-        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
-          Фон <span className="text-[9px]">▼</span>
-        </button>
-        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
-          Символ <span className="text-[9px]">▼</span>
-        </button>
-      </div>
-
-      {/* 6. СЕТКА NFT С 3D АССЕТАМИ И ФОНОВЫМ ПАТТЕРНОМ */}
+      {/* СЕТКА С НАСТОЯЩИМИ NFT ИЗ TELEGRAM */}
       <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
         {INITIAL_MARKET_ITEMS.map((item) => (
           <div
@@ -175,25 +107,21 @@ export default function App() {
             onClick={() => setSelectedNft(item)}
             className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between active:scale-95 transition-transform cursor-pointer"
           >
-            {/* Блок картинки с градиентом и узором */}
+            {/* Отрисовка NFT */}
             <div 
               className="h-44 relative flex items-center justify-center p-3 overflow-hidden"
               style={{ background: item.bgPattern }}
             >
-              {/* Легкая сетка паттерна на фоне */}
-              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:12px_12px]" />
-
               <img
                 src={item.imageUrl}
                 alt={item.name}
                 onError={(e) => {
-                  // Резервная загрузка если CDN временно недоступен
-                  e.target.onerror = null; 
-                  e.target.src = 'https://raw.githubusercontent.com/TelegramMessenger/TWeb/master/src/assets/img/gift.png';
+                  // Резервная загрузка
+                  e.target.onerror = null;
+                  e.target.src = 'https://nft.fragment.com/gift/gift.png';
                 }}
-                className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_20px_rgba(0,0,0,0.6)] transform hover:scale-110 transition-transform duration-300 z-10"
+                className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_20px_rgba(0,0,0,0.6)] transform hover:scale-105 transition-transform duration-300 z-10"
               />
-
               <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-[10px] z-20">
                 {item.badgeIcon}
               </div>
@@ -203,33 +131,31 @@ export default function App() {
               <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
               <p className="text-[10px] text-neutral-500 mt-0.5">{item.number}</p>
 
-              {item.id === 4 ? (
-                <button className="mt-2 w-full py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-neutral-200 transition-colors">
-                  <span>🛒</span> Купить оптом
-                </button>
-              ) : (
-                <div className="mt-2 flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-xs font-bold text-white">
-                    <span>💎</span> {item.price}
-                  </div>
-                  <button className="p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-neutral-300 transition-colors">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                    </svg>
-                  </button>
+              <div className="mt-2 flex items-center justify-between">
+                <div className="flex items-center gap-1 text-xs font-bold text-white">
+                  <span>💎</span> {item.price} TON
                 </div>
-              )}
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs text-neutral-300"
+                >
+                  ↗
+                </a>
+              </div>
             </div>
           </div>
         ))}
       </main>
 
-      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЬНОГО ПРОСМОТРА */}
+      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЕЙ */}
       {selectedNft && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
           <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center animate-slide-up">
             <div 
-              className="w-40 h-40 mx-auto rounded-2xl p-4 flex items-center justify-center mb-4 shadow-2xl relative overflow-hidden"
+              className="w-44 h-44 mx-auto rounded-2xl p-4 flex items-center justify-center mb-4 shadow-2xl relative overflow-hidden"
               style={{ background: selectedNft.bgPattern }}
             >
               <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain filter drop-shadow-xl z-10" />
@@ -248,25 +174,24 @@ export default function App() {
             <div className="flex gap-3">
               <button
                 onClick={() => setSelectedNft(null)}
-                className="flex-1 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold transition-colors"
+                className="flex-1 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold"
               >
                 Закрыть
               </button>
-              <button
-                onClick={() => {
-                  alert(`Запрос на покупку ${selectedNft.name} отправлен`);
-                  setSelectedNft(null);
-                }}
-                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-semibold shadow-lg transition-colors"
+              <a
+                href={selectedNft.link}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-semibold text-center"
               >
-                Купить сейчас
-              </button>
+                Открыть в Telegram
+              </a>
             </div>
           </div>
         </div>
       )}
 
-      {/* 7. НИЖНЯЯ НАВИГАЦИЯ */}
+      {/* НАВИГАЦИЯ */}
       <nav className="fixed bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-neutral-800 px-2 py-2 flex justify-around z-40">
         <button onClick={() => setActiveTab('market')} className={`flex flex-col items-center gap-1 ${activeTab === 'market' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">░░</span>
@@ -275,18 +200,6 @@ export default function App() {
         <button onClick={() => setActiveTab('orders')} className={`flex flex-col items-center gap-1 ${activeTab === 'orders' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">📋</span>
           <span className="text-[10px]">Ордеры</span>
-        </button>
-        <button onClick={() => setActiveTab('hub')} className={`flex flex-col items-center gap-1 ${activeTab === 'hub' ? 'text-white font-bold' : 'text-neutral-500'}`}>
-          <span className="text-base">🎮</span>
-          <span className="text-[10px]">Игровой хаб</span>
-        </button>
-        <button onClick={() => setActiveTab('tasks')} className={`flex flex-col items-center gap-1 ${activeTab === 'tasks' ? 'text-white font-bold' : 'text-neutral-500'}`}>
-          <span className="text-base">🤖</span>
-          <span className="text-[10px]">Задания</span>
-        </button>
-        <button onClick={() => setActiveTab('storage')} className={`flex flex-col items-center gap-1 ${activeTab === 'storage' ? 'text-white font-bold' : 'text-neutral-500'}`}>
-          <span className="text-base">📦</span>
-          <span className="text-[10px]">Хранилище</span>
         </button>
       </nav>
     </div>
