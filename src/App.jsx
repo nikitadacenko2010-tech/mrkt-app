@@ -2,240 +2,256 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-const INITIAL_GIFTS = [
+// Моковые данные NFT подарков из оригинала
+const INITIAL_MARKET_ITEMS = [
   {
     id: 1,
-    name: 'Delicious Cake',
-    price: 50,
-    currency: 'STARS',
-    image: '🎂',
-    supply: '10,000',
-    purchased: 4120,
-    badge: 'Limited',
-    gradient: 'from-pink-500 to-rose-500'
+    name: 'Chill Flame',
+    number: '#362097',
+    price: 3.37,
+    image: '🔥',
+    bgGradient: 'from-sky-400 to-blue-600',
   },
   {
     id: 2,
-    name: 'Green Star',
-    price: 150,
-    currency: 'STARS',
-    image: '⭐',
-    supply: '5,000',
-    purchased: 4890,
-    badge: 'Hot',
-    gradient: 'from-emerald-400 to-teal-600'
+    name: 'Vice Cream',
+    number: '#311925',
+    price: 3.46,
+    image: '🍦',
+    bgGradient: 'from-emerald-400 to-teal-600',
   },
   {
     id: 3,
-    name: 'Plush Bear',
-    price: 250,
-    currency: 'STARS',
-    image: '🧸',
-    supply: '2,500',
-    purchased: 1200,
-    badge: 'Rare',
-    gradient: 'from-amber-400 to-orange-500'
+    name: 'Orange Ice',
+    number: '#102941',
+    price: 2.80,
+    image: '🍧',
+    bgGradient: 'from-emerald-300 to-teal-500',
   },
   {
     id: 4,
-    name: 'Gold Ring',
-    price: 500,
-    currency: 'STARS',
-    image: '💍',
-    supply: '1,000',
-    purchased: 980,
-    badge: 'Almost Gone',
-    gradient: 'from-yellow-300 to-amber-600'
-  }
+    name: 'Berry Delight',
+    number: '#882103',
+    price: 4.10,
+    image: '🧁',
+    bgGradient: 'from-amber-500 to-orange-600',
+  },
 ];
 
 export default function App() {
-  const [balance, setBalance] = useState(1000);
-  const [gifts, setGifts] = useState(INITIAL_GIFTS);
-  const [userInventory, setUserInventory] = useState([]);
-  const [activeTab, setActiveTab] = useState('store');
-  const [selectedGift, setSelectedGift] = useState(null);
+  const [activeTab, setActiveTab] = useState('market'); // market | orders | hub | tasks | storage
+  const [category, setCategory] = useState('gifts');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.setHeaderColor(tg.themeParams?.bg_color || '#17212b');
+      tg.setHeaderColor('#121212');
     }
   }, []);
 
-  const handleBuy = (gift) => {
-    if (balance < gift.price) {
-      if (tg?.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred('error');
-      }
-      alert('Недостаточно звёзд / баланса!');
-      return;
-    }
-
-    setBalance((prev) => prev - gift.price);
-    setUserInventory((prev) => [...prev, { ...gift, purchasedAt: new Date().toLocaleTimeString() }]);
-    
-    setGifts((prevGifts) =>
-      prevGifts.map((item) =>
-        item.id === gift.id ? { ...item, purchased: item.purchased + 1 } : item
-      )
-    );
-
-    if (tg?.HapticFeedback) {
-      tg.HapticFeedback.notificationOccurred('success');
-    }
-
-    setSelectedGift(null);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans pb-20 select-none">
-      <header className="p-4 bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-800 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center font-bold text-lg">
-            {tg?.initDataUnsafe?.user?.first_name?.[0] || 'U'}
+    <div className="min-h-screen bg-[#121212] text-white font-sans pb-24 select-none">
+      {/* 1. ВЕРХНЯЯ ШАПКА */}
+      <header className="px-4 py-3 flex items-center justify-between border-b border-neutral-800/60 sticky top-0 bg-[#121212]/95 backdrop-blur-md z-30">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center overflow-hidden">
+            <span className="text-xs">🗿</span>
           </div>
-          <div>
-            <h1 className="font-semibold text-sm leading-tight">
-              {tg?.initDataUnsafe?.user?.first_name || 'Пользователь'}
-            </h1>
-            <p className="text-xs text-slate-400">@MRKT Collector</p>
+          {/* Баланс TON */}
+          <div className="flex items-center gap-1 bg-[#1c1c1e] px-2.5 py-1 rounded-full border border-neutral-800">
+            <span className="text-xs">💎</span>
+            <span className="text-xs font-bold">{balance}</span>
+            <button className="w-4 h-4 rounded-full bg-neutral-700 text-[10px] flex items-center justify-center text-neutral-300 ml-1">
+              +
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-slate-800/90 px-3 py-1.5 rounded-full border border-slate-700/50">
-          <span className="text-amber-400">⭐</span>
-          <span className="font-bold text-sm">{balance}</span>
+        {/* Правые иконки */}
+        <div className="flex items-center gap-3 text-neutral-400">
+          <button className="hover:text-white">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </button>
+          <button className="hover:text-white">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+          <button className="hover:text-white">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </header>
 
-      <div className="p-4">
-        <div className="flex bg-slate-900 rounded-xl p-1 border border-slate-800">
-          <button
-            onClick={() => setActiveTab('store')}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'store'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Магазин Подарков
-          </button>
-          <button
-            onClick={() => setActiveTab('inventory')}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'inventory'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Моя Коллекция ({userInventory.length})
-          </button>
+      {/* 2. БАННЕР ПЕНАЛЬТИ */}
+      <div className="p-3">
+        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-neutral-900 border border-emerald-800/40 rounded-2xl p-3 flex items-center justify-between relative overflow-hidden">
+          <div>
+            <div className="text-xs font-bold text-emerald-400 tracking-wide uppercase">
+              PENALTY УЖЕ В PLAYHUB
+            </div>
+            <div className="text-xs text-neutral-300 mt-0.5">10 ударов до финала!</div>
+          </div>
+          <div className="text-3xl">⚽</div>
         </div>
       </div>
 
-      {activeTab === 'store' && (
-        <main className="px-4 grid grid-cols-2 gap-3">
-          {gifts.map((gift) => (
-            <div
-              key={gift.id}
-              onClick={() => setSelectedGift(gift)}
-              className="relative group bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-between cursor-pointer active:scale-95 transition-transform"
-            >
-              <span className="absolute top-2 left-2 text-[10px] uppercase tracking-wider font-bold bg-slate-800/80 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20">
-                {gift.badge}
-              </span>
+      {/* 3. КАТЕГОРИИ (Подарки, Звезды и т.д.) */}
+      <div className="px-3 flex gap-2 overflow-x-auto no-scrollbar py-1">
+        <button
+          onClick={() => setCategory('gifts')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+            category === 'gifts'
+              ? 'bg-neutral-800 text-white border border-neutral-700'
+              : 'bg-[#1c1c1e] text-neutral-400'
+          }`}
+        >
+          <span>🎛️</span> Подарки
+        </button>
+        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">🚶</button>
+        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">⭐</button>
+        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">🖥️</button>
+        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl text-xs">📣</button>
+        <button className="p-2 bg-[#1c1c1e] text-neutral-400 rounded-xl ml-auto text-xs">🛒</button>
+      </div>
 
-              <div
-                className={`w-24 h-24 my-3 rounded-2xl bg-gradient-to-tr ${gift.gradient} flex items-center justify-center text-5xl shadow-inner shadow-black/30 group-hover:scale-105 transition-transform`}
-              >
-                {gift.image}
+      {/* 4. ПОИСК И FEED */}
+      <div className="px-3 mt-3 flex gap-2">
+        <div className="flex-1 bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
+          <span className="text-neutral-500 text-sm">🔍</span>
+          <input
+            type="text"
+            placeholder="Поиск по названию NFT / номеру"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-transparent text-xs text-white placeholder-neutral-500 focus:outline-none w-full"
+          />
+        </div>
+        <button className="bg-[#1c1c1e] border border-neutral-800/80 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 text-neutral-300">
+          <span>📋</span> Feed
+        </button>
+      </div>
+
+      {/* 5. ФИЛЬТРЫ (NFT, Модель, Фон...) */}
+      <div className="px-3 mt-2 flex gap-1.5 overflow-x-auto no-scrollbar">
+        <button className="p-2 bg-[#1c1c1e] rounded-lg text-neutral-400 text-xs">⚡</button>
+        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
+          NFT <span className="text-[9px]">▼</span>
+        </button>
+        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
+          Модель <span className="text-[9px]">▼</span>
+        </button>
+        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
+          Фон <span className="text-[9px]">▼</span>
+        </button>
+        <button className="px-2.5 py-1.5 bg-[#1c1c1e] rounded-lg text-neutral-300 text-[11px] flex items-center gap-1">
+          Символ <span className="text-[9px]">▼</span>
+        </button>
+      </div>
+
+      {/* 6. СЕТКА NFT ПОДАРКОВ */}
+      <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
+        {INITIAL_MARKET_ITEMS.map((item) => (
+          <div
+            key={item.id}
+            className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between"
+          >
+            {/* Картинка NFT с градиентом и паттерном */}
+            <div className={`h-40 bg-gradient-to-tr ${item.bgGradient} relative flex items-center justify-center text-6xl shadow-inner`}>
+              <span className="drop-shadow-lg">{item.image}</span>
+              {/* Значок типа подарка справа вверху */}
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center text-[10px]">
+                ☘️
               </div>
+            </div>
 
-              <div className="w-full text-center">
-                <h3 className="font-bold text-sm text-slate-100">{gift.name}</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Куплено {gift.purchased} из {gift.supply}
-                </p>
+            {/* Описание */}
+            <div className="p-2.5">
+              <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
+              <p className="text-[10px] text-neutral-500 mt-0.5">{item.number}</p>
 
-                <button className="mt-3 w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold text-xs flex items-center justify-center gap-1 shadow-md transition-colors">
-                  <span>⭐</span>
-                  <span>{gift.price} STARS</span>
+              {/* Цена и Кнопки */}
+              {item.id === 4 ? (
+                /* Кнопка "Купить оптом" как на скрине */
+                <button className="mt-2 w-full py-2 bg-neutral-800 hover:bg-neutral-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-neutral-200 transition-colors">
+                  <span>🛒</span> Купить оптом
                 </button>
-              </div>
-            </div>
-          ))}
-        </main>
-      )}
-
-      {activeTab === 'inventory' && (
-        <main className="px-4">
-          {userInventory.length === 0 ? (
-            <div className="text-center py-16 text-slate-500">
-              <div className="text-5xl mb-3">🎁</div>
-              <p className="text-sm font-medium">У вас пока нет купленных подарков.</p>
-              <p className="text-xs text-slate-600 mt-1">Купите свой первый подарок в магазине!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {userInventory.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col items-center"
-                >
-                  <div
-                    className={`w-20 h-20 my-2 rounded-2xl bg-gradient-to-tr ${item.gradient} flex items-center justify-center text-4xl`}
-                  >
-                    {item.image}
+              ) : (
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-xs font-bold text-white">
+                    <span>💎</span> {item.price}
                   </div>
-                  <h3 className="font-bold text-sm text-slate-100 mt-1">{item.name}</h3>
-                  <span className="text-[10px] text-slate-500 mt-1">Куплено в {item.purchasedAt}</span>
+                  <button className="p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-neutral-300 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                    </svg>
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </main>
-      )}
-
-      {selectedGift && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl p-6 text-center shadow-2xl">
-            <div
-              className={`w-28 h-28 mx-auto rounded-3xl bg-gradient-to-tr ${selectedGift.gradient} flex items-center justify-center text-6xl shadow-xl mb-4`}
-            >
-              {selectedGift.image}
-            </div>
-
-            <h2 className="text-xl font-bold">{selectedGift.name}</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Ограниченная серия: {selectedGift.supply} шт.
-            </p>
-
-            <div className="my-6 p-3 bg-slate-950/50 rounded-2xl border border-slate-800 flex justify-between items-center text-sm">
-              <span className="text-slate-400">Стоимость:</span>
-              <span className="font-bold text-amber-400 flex items-center gap-1">
-                ⭐ {selectedGift.price} STARS
-              </span>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setSelectedGift(null)}
-                className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold transition-colors"
-              >
-                Отмена
-              </button>
-              <button
-                onClick={() => handleBuy(selectedGift)}
-                className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-semibold shadow-lg transition-colors"
-              >
-                Подтвердить
-              </button>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </main>
+
+      {/* 7. НИЖНЯЯ НАВИГАЦИЯ (BOTTOM BAR) */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-neutral-800 px-2 py-2 flex justify-around z-40">
+        <button
+          onClick={() => setActiveTab('market')}
+          className={`flex flex-col items-center gap-1 ${
+            activeTab === 'market' ? 'text-white font-bold' : 'text-neutral-500'
+          }`}
+        >
+          <span className="text-base">░░</span>
+          <span className="text-[10px]">Маркет</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('orders')}
+          className={`flex flex-col items-center gap-1 ${
+            activeTab === 'orders' ? 'text-white font-bold' : 'text-neutral-500'
+          }`}
+        >
+          <span className="text-base">📋</span>
+          <span className="text-[10px]">Ордеры</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('hub')}
+          className={`flex flex-col items-center gap-1 ${
+            activeTab === 'hub' ? 'text-white font-bold' : 'text-neutral-500'
+          }`}
+        >
+          <span className="text-base">🎮</span>
+          <span className="text-[10px]">Игровой хаб</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('tasks')}
+          className={`flex flex-col items-center gap-1 ${
+            activeTab === 'tasks' ? 'text-white font-bold' : 'text-neutral-500'
+          }`}
+        >
+          <span className="text-base">🤖</span>
+          <span className="text-[10px]">Задания</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('storage')}
+          className={`flex flex-col items-center gap-1 ${
+            activeTab === 'storage' ? 'text-white font-bold' : 'text-neutral-500'
+          }`}
+        >
+          <span className="text-base">📦</span>
+          <span className="text-[10px]">Хранилище</span>
+        </button>
+      </nav>
     </div>
   );
 }
