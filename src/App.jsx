@@ -2,53 +2,40 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Базовые типы NFT с их именами, значками и диапазонами номеров
-const BASE_TYPES = [
-  {
-    name: 'Snow Globe',
-    prefix: 'SnowGlobe',
-    badgeIcon: '❄️',
-    basePrice: 15.00,
-    linkPrefix: 'https://t.me/nft/SnowGlobe-',
-    // Функция получения URL картинки для конкретного номера
-    getImageUrl: (num) => `https://nft.fragment.com/gift/SnowGlobe-${num}.webp`
-  },
-  {
-    name: 'Party Sparkler',
-    prefix: 'PartySparkler',
-    badgeIcon: '✨',
-    basePrice: 4.00,
-    linkPrefix: 'https://t.me/nft/PartySparkler-',
-    getImageUrl: (num) => `https://nft.fragment.com/gift/PartySparkler-${num}.webp`
-  },
-  {
-    name: 'Snoop Dogg',
-    prefix: 'SnoopDogg',
-    badgeIcon: '🌿',
-    basePrice: 85.00,
-    linkPrefix: 'https://t.me/nft/SnoopDogg-',
-    getImageUrl: (num) => `https://nft.fragment.com/gift/SnoopDogg-${num}.webp`
-  }
+// Полный каталог доступных видов NFT-подарков Telegram
+const BASE_COLLECTIONS = [
+  { name: 'Pepe', prefix: 'Pepe', badgeIcon: '🐸', basePrice: 45.00 },
+  { name: 'Snoop Dogg', prefix: 'SnoopDogg', badgeIcon: '🌿', basePrice: 88.00 },
+  { name: 'Snow Globe', prefix: 'SnowGlobe', badgeIcon: '❄️', basePrice: 15.00 },
+  { name: 'Party Sparkler', prefix: 'PartySparkler', badgeIcon: '✨', basePrice: 4.20 },
+  { name: 'Plush Pepe', prefix: 'PlushPepe', badgeIcon: '🧸', basePrice: 60.00 },
+  { name: 'Diamond Ring', prefix: 'DiamondRing', badgeIcon: '💍', basePrice: 120.00 },
+  { name: 'Santa Hat', prefix: 'SantaHat', badgeIcon: '🎅', basePrice: 8.50 },
+  { name: 'Telegram 21', prefix: 'Telegram21', badgeIcon: '✈️', basePrice: 210.00 },
+  { name: 'Vice Cream', prefix: 'ViceCream', badgeIcon: '🍦', basePrice: 3.50 },
+  { name: 'Hot Pepper', prefix: 'HotPepper', badgeIcon: '🌶️', basePrice: 5.00 },
+  { name: 'Magic Potion', prefix: 'MagicPotion', badgeIcon: '🧪', basePrice: 18.00 },
+  { name: 'Golden Star', prefix: 'GoldenStar', badgeIcon: '⭐', basePrice: 30.00 },
 ];
 
-// Генерация массива из 300+ NFT (по 100+ каждого вида)
+// Генерация массива: минимум 100 предметов ДЛЯ КАЖДОГО вида NFT
 const GENERATED_NFT_ITEMS = [];
 
-BASE_TYPES.forEach((type, typeIdx) => {
+BASE_COLLECTIONS.forEach((collection, colIdx) => {
   for (let i = 1; i <= 100; i++) {
-    // Уникальный ID и случайно сгенерированный номер для каждого вида NFT
-    const itemNumber = (typeIdx + 1) * 1000 + i * 12 + (i % 7);
-    const priceVariation = Number((type.basePrice + (i % 15) * 0.35).toFixed(2));
-    
+    // Генерация уникального номера и разброса цен
+    const itemNumber = (colIdx + 1) * 10000 + i * 17 + (i % 5);
+    const priceVariation = Number((collection.basePrice + (i % 25) * 0.45).toFixed(2));
+
     GENERATED_NFT_ITEMS.push({
-      id: `${type.prefix}-${itemNumber}`,
-      type: type.prefix,
-      name: type.name,
+      id: `${collection.prefix}-${itemNumber}`,
+      type: collection.prefix,
+      name: collection.name,
       number: `#${itemNumber}`,
       price: priceVariation,
-      link: `${type.linkPrefix}${itemNumber}`,
-      imageUrl: type.getImageUrl(itemNumber),
-      badgeIcon: type.badgeIcon
+      link: `https://t.me/nft/${collection.prefix}-${itemNumber}`,
+      imageUrl: `https://nft.fragment.com/gift/${collection.prefix}-${itemNumber}.webp`,
+      badgeIcon: collection.badgeIcon,
     });
   }
 });
@@ -59,9 +46,7 @@ export default function App() {
   const [selectedType, setSelectedType] = useState('all');
   const [balance, setBalance] = useState(0);
   const [selectedNft, setSelectedNft] = useState(null);
-  
-  // Лимит отображаемых NFT на странице для быстродействия
-  const [visibleCount, setVisibleCount] = useState(20);
+  const [visibleCount, setVisibleCount] = useState(24);
 
   useEffect(() => {
     if (tg) {
@@ -71,10 +56,11 @@ export default function App() {
     }
   }, []);
 
-  // Фильтрация NFT по поиску и типу
+  // Фильтрация NFT по поисковому запросу и выбранной коллекции
   const filteredItems = GENERATED_NFT_ITEMS.filter((item) => {
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.number.includes(searchQuery);
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.number.includes(searchQuery);
     const matchesType = selectedType === 'all' || item.type === selectedType;
     return matchesSearch && matchesType;
   });
@@ -112,61 +98,44 @@ export default function App() {
         </div>
       </header>
 
-      {/* 2. ПОИСК И ФИЛЬТРЫ */}
+      {/* 2. ПОИСК И ФИЛЬТРЫ ПО ВСЕМ ВИДАМ NFT */}
       <div className="px-3 mt-3 flex flex-col gap-2">
         <div className="bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
           <span className="text-neutral-500 text-sm">🔍</span>
           <input
             type="text"
-            placeholder="Поиск по номеру (#1463) или названию..."
+            placeholder="Поиск по номеру (#10017) или названию (Pepe)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent text-xs text-white placeholder-neutral-500 focus:outline-none w-full"
           />
         </div>
 
-        {/* Кнопки переключения видов NFT */}
+        {/* Горизонтальный скролл фильтров по видам NFT */}
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
           <button
-            onClick={() => { setSelectedType('all'); setVisibleCount(20); }}
+            onClick={() => { setSelectedType('all'); setVisibleCount(24); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
               selectedType === 'all'
                 ? 'bg-neutral-800 text-white border border-neutral-700'
                 : 'bg-[#1c1c1e] text-neutral-400'
             }`}
           >
-            Все (300+)
+            Все виды ({GENERATED_NFT_ITEMS.length})
           </button>
-          <button
-            onClick={() => { setSelectedType('SnowGlobe'); setVisibleCount(20); }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-              selectedType === 'SnowGlobe'
-                ? 'bg-neutral-800 text-white border border-neutral-700'
-                : 'bg-[#1c1c1e] text-neutral-400'
-            }`}
-          >
-            ❄️ Snow Globe (100)
-          </button>
-          <button
-            onClick={() => { setSelectedType('PartySparkler'); setVisibleCount(20); }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-              selectedType === 'PartySparkler'
-                ? 'bg-neutral-800 text-white border border-neutral-700'
-                : 'bg-[#1c1c1e] text-neutral-400'
-            }`}
-          >
-            ✨ Party Sparkler (100)
-          </button>
-          <button
-            onClick={() => { setSelectedType('SnoopDogg'); setVisibleCount(20); }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-              selectedType === 'SnoopDogg'
-                ? 'bg-neutral-800 text-white border border-neutral-700'
-                : 'bg-[#1c1c1e] text-neutral-400'
-            }`}
-          >
-            🌿 Snoop Dogg (100)
-          </button>
+          {BASE_COLLECTIONS.map((col) => (
+            <button
+              key={col.prefix}
+              onClick={() => { setSelectedType(col.prefix); setVisibleCount(24); }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
+                selectedType === col.prefix
+                  ? 'bg-neutral-800 text-white border border-neutral-700'
+                  : 'bg-[#1c1c1e] text-neutral-400'
+              }`}
+            >
+              <span>{col.badgeIcon}</span> {col.name} (100)
+            </button>
+          ))}
         </div>
       </div>
 
@@ -178,7 +147,7 @@ export default function App() {
             onClick={() => setSelectedNft(item)}
             className="relative h-64 rounded-2xl overflow-hidden border border-neutral-800/80 bg-neutral-900 active:scale-95 transition-transform cursor-pointer group"
           >
-            {/* Изображение на всю высоту и ширину */}
+            {/* Изображение во весь размер */}
             <img
               src={item.imageUrl}
               alt={item.name}
@@ -189,12 +158,12 @@ export default function App() {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
 
-            {/* Значок в углу */}
+            {/* Иконка в углу */}
             <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-xs z-10 border border-white/10">
               {item.badgeIcon}
             </div>
 
-            {/* Градиентное затемнение с текстом снизу */}
+            {/* Затемнение снизу с информацией */}
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 pt-10 flex flex-col justify-end">
               <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
               <p className="text-[10px] text-neutral-400 mt-0.5">{item.number}</p>
@@ -218,11 +187,11 @@ export default function App() {
         ))}
       </main>
 
-      {/* КНОПКА ЗАГРУЗИТЬ ЕЩЕ */}
+      {/* КНОПКА ЗАГРУЗКИ ДОПОЛНИТЕЛЬНЫХ ЭЛЕМЕНТОВ */}
       {visibleCount < filteredItems.length && (
         <div className="px-3 mt-4 text-center">
           <button
-            onClick={() => setVisibleCount((prev) => prev + 20)}
+            onClick={() => setVisibleCount((prev) => prev + 24)}
             className="w-full py-3 bg-[#1c1c1e] hover:bg-neutral-800 border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-300 transition-colors"
           >
             Загрузить еще ({filteredItems.length - visibleCount} осталось)
@@ -230,7 +199,7 @@ export default function App() {
         </div>
       )}
 
-      {/* МОДАЛЬНОЕ ОКНО ПРОСМОТРА */}
+      {/* 4. МОДАЛЬНОЕ ОКНО ПРОСМОТРА */}
       {selectedNft && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
           <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center animate-slide-up">
@@ -268,7 +237,7 @@ export default function App() {
         </div>
       )}
 
-      {/* 4. НИЖНЯЯ НАВИГАЦИЯ */}
+      {/* 5. НИЖНЯЯ НАВИГАЦИЯ */}
       <nav className="fixed bottom-0 left-0 right-0 bg-[#121212]/95 backdrop-blur-lg border-t border-neutral-800 px-2 py-2 flex justify-around z-40">
         <button onClick={() => setActiveTab('market')} className={`flex flex-col items-center gap-1 ${activeTab === 'market' ? 'text-white font-bold' : 'text-neutral-500'}`}>
           <span className="text-base">░░</span>
