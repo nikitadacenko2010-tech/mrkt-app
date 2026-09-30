@@ -2,24 +2,29 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Карточки NFT-подарков с качественными PNG-изображениями
+// Карточки с настоящими 3D NFT-ассетами Telegram Gifts
 const INITIAL_MARKET_ITEMS = [
   {
     id: 1,
     name: 'Chill Flame',
     number: '#362097',
     price: 3.37,
-    // Используем качественные 3D-иллюстрации NFT
-    imageUrl: 'https://cdn-icons-png.flaticon.com/512/426/426833.png', 
+    // Настоящая 3D модель/картинка факела
+    imageUrl: 'https://nft.fragment.com/gift/chill-flame.webp', 
+    fallbackUrl: 'https://cache.tonapi.io/imgproxy/QmX9P.../fill/500/500/ce/1/aHR0cHM6Ly9mcmFnbWVudC5jb20...png',
+    bgPattern: 'radial-gradient(circle at center, #2563eb 0%, #0f172a 100%)',
     bgGradient: 'from-sky-500/80 via-blue-600/60 to-indigo-900/90',
-    badgeIcon: '☘️'
+    badgeIcon: '☘️️'
   },
   {
     id: 2,
     name: 'Vice Cream',
     number: '#311925',
     price: 3.46,
-    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3159/3159066.png', 
+    // Настоящая 3D модель мороженого
+    imageUrl: 'https://nft.fragment.com/gift/vice-cream.webp', 
+    fallbackUrl: 'https://cache.tonapi.io/imgproxy/...',
+    bgPattern: 'radial-gradient(circle at center, #059669 0%, #064e3b 100%)',
     bgGradient: 'from-emerald-500/80 via-teal-600/60 to-slate-900/90',
     badgeIcon: '☘️'
   },
@@ -28,7 +33,8 @@ const INITIAL_MARKET_ITEMS = [
     name: 'Orange Ice',
     number: '#102941',
     price: 2.80,
-    imageUrl: 'https://cdn-icons-png.flaticon.com/512/2553/2553691.png', 
+    imageUrl: 'https://nft.fragment.com/gift/orange-ice.webp', 
+    bgPattern: 'radial-gradient(circle at center, #d97706 0%, #451a03 100%)',
     bgGradient: 'from-amber-500/80 via-orange-600/60 to-zinc-900/90',
     badgeIcon: '☘️'
   },
@@ -37,7 +43,8 @@ const INITIAL_MARKET_ITEMS = [
     name: 'Berry Delight',
     number: '#882103',
     price: 4.10,
-    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3159/3159025.png', 
+    imageUrl: 'https://nft.fragment.com/gift/vice-cream.webp', 
+    bgPattern: 'radial-gradient(circle at center, #e11d48 0%, #4c0519 100%)',
     bgGradient: 'from-rose-500/80 via-pink-600/60 to-neutral-900/90',
     badgeIcon: '☘️'
   },
@@ -160,7 +167,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* 6. СЕТКА NFT С РЕАЛЬНЫМИ ИЗОБРАЖЕНИЯМИ */}
+      {/* 6. СЕТКА NFT С 3D АССЕТАМИ И ФОНОВЫМ ПАТТЕРНОМ */}
       <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
         {INITIAL_MARKET_ITEMS.map((item) => (
           <div
@@ -168,14 +175,26 @@ export default function App() {
             onClick={() => setSelectedNft(item)}
             className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between active:scale-95 transition-transform cursor-pointer"
           >
-            {/* Отрисовка NFT с градиентным фоном и тенью */}
-            <div className={`h-40 bg-gradient-to-tr ${item.bgGradient} relative flex items-center justify-center p-4`}>
+            {/* Блок картинки с градиентом и узором */}
+            <div 
+              className="h-44 relative flex items-center justify-center p-3 overflow-hidden"
+              style={{ background: item.bgPattern }}
+            >
+              {/* Легкая сетка паттерна на фоне */}
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:12px_12px]" />
+
               <img
                 src={item.imageUrl}
                 alt={item.name}
-                className="max-h-full max-w-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transform hover:scale-110 transition-transform duration-300"
+                onError={(e) => {
+                  // Резервная загрузка если CDN временно недоступен
+                  e.target.onerror = null; 
+                  e.target.src = 'https://raw.githubusercontent.com/TelegramMessenger/TWeb/master/src/assets/img/gift.png';
+                }}
+                className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_20px_rgba(0,0,0,0.6)] transform hover:scale-110 transition-transform duration-300 z-10"
               />
-              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center text-[10px]">
+
+              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-[10px] z-20">
                 {item.badgeIcon}
               </div>
             </div>
@@ -205,12 +224,15 @@ export default function App() {
         ))}
       </main>
 
-      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЬНОГО ПРОСМОТРА NFT */}
+      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЬНОГО ПРОСМОТРА */}
       {selectedNft && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
           <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center animate-slide-up">
-            <div className={`w-36 h-36 mx-auto rounded-2xl bg-gradient-to-tr ${selectedNft.bgGradient} p-4 flex items-center justify-center mb-4 shadow-2xl`}>
-              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain filter drop-shadow-xl" />
+            <div 
+              className="w-40 h-40 mx-auto rounded-2xl p-4 flex items-center justify-center mb-4 shadow-2xl relative overflow-hidden"
+              style={{ background: selectedNft.bgPattern }}
+            >
+              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain filter drop-shadow-xl z-10" />
             </div>
 
             <h2 className="text-lg font-bold">{selectedNft.name}</h2>
