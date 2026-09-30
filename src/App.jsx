@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const tg = window.Telegram?.WebApp;
 
-// Карточки с указанными вами NFT подарками из Telegram (Fragment)
+// Карточки с указанными NFT подарками из Telegram (Fragment)
 const INITIAL_MARKET_ITEMS = [
   {
     id: 1,
@@ -10,9 +10,7 @@ const INITIAL_MARKET_ITEMS = [
     number: '#1463',
     price: 15.50,
     link: 'https://t.me/nft/SnowGlobe-1463',
-    // Превью NFT SnowGlobe с Fragment
     imageUrl: 'https://nft.fragment.com/gift/SnowGlobe-1463.webp', 
-    bgPattern: 'radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%)',
     badgeIcon: '❄️'
   },
   {
@@ -21,9 +19,7 @@ const INITIAL_MARKET_ITEMS = [
     number: '#118452',
     price: 4.20,
     link: 'https://t.me/nft/PartySparkler-118452',
-    // Превью NFT PartySparkler с Fragment
     imageUrl: 'https://nft.fragment.com/gift/PartySparkler-118452.webp', 
-    bgPattern: 'radial-gradient(circle at center, #854d0e 0%, #1a1003 100%)',
     badgeIcon: '✨'
   },
   {
@@ -32,16 +28,13 @@ const INITIAL_MARKET_ITEMS = [
     number: '#227413',
     price: 88.00,
     link: 'https://t.me/nft/SnoopDogg-227413',
-    // Превью NFT SnoopDogg с Fragment
     imageUrl: 'https://nft.fragment.com/gift/SnoopDogg-227413.webp', 
-    bgPattern: 'radial-gradient(circle at center, #3f6212 0%, #0e1e07 100%)',
     badgeIcon: '🌿'
   }
 ];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('market');
-  const [category, setCategory] = useState('gifts');
   const [searchQuery, setSearchQuery] = useState('');
   const [balance, setBalance] = useState(0);
   const [selectedNft, setSelectedNft] = useState(null);
@@ -85,9 +78,9 @@ export default function App() {
         </div>
       </header>
 
-      {/* КАТЕГОРИИ И ПОИСК */}
-      <div className="px-3 mt-3 flex gap-2">
-        <div className="flex-1 bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
+      {/* ПОИСК */}
+      <div className="px-3 mt-3">
+        <div className="bg-[#1c1c1e] rounded-xl px-3 py-2 flex items-center gap-2 border border-neutral-800/80">
           <span className="text-neutral-500 text-sm">🔍</span>
           <input
             type="text"
@@ -99,37 +92,34 @@ export default function App() {
         </div>
       </div>
 
-      {/* СЕТКА С НАСТОЯЩИМИ NFT ИЗ TELEGRAM */}
+      {/* СЕТКА NFT — КАРТИНКА НА ВСЮ ПЛОЩАДЬ */}
       <main className="px-3 mt-3 grid grid-cols-2 gap-2.5">
         {INITIAL_MARKET_ITEMS.map((item) => (
           <div
             key={item.id}
             onClick={() => setSelectedNft(item)}
-            className="bg-[#1c1c1e] border border-neutral-800/80 rounded-2xl overflow-hidden flex flex-col justify-between active:scale-95 transition-transform cursor-pointer"
+            className="relative h-64 rounded-2xl overflow-hidden border border-neutral-800/80 bg-neutral-900 active:scale-95 transition-transform cursor-pointer group"
           >
-            {/* Отрисовка NFT */}
-            <div 
-              className="h-44 relative flex items-center justify-center p-3 overflow-hidden"
-              style={{ background: item.bgPattern }}
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                onError={(e) => {
-                  // Резервная загрузка
-                  e.target.onerror = null;
-                  e.target.src = 'https://nft.fragment.com/gift/gift.png';
-                }}
-                className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_20px_rgba(0,0,0,0.6)] transform hover:scale-105 transition-transform duration-300 z-10"
-              />
-              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-[10px] z-20">
-                {item.badgeIcon}
-              </div>
+            {/* Картинка NFT во всю ширину и высоту */}
+            <img
+              src={item.imageUrl}
+              alt={item.name}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://nft.fragment.com/gift/gift.png';
+              }}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+
+            {/* Иконка в верхнем углу */}
+            <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-xs z-10 border border-white/10">
+              {item.badgeIcon}
             </div>
 
-            <div className="p-2.5">
+            {/* Градиентное затемнение снизу для текста */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 pt-10 flex flex-col justify-end">
               <h3 className="text-xs font-bold text-white leading-tight">{item.name}</h3>
-              <p className="text-[10px] text-neutral-500 mt-0.5">{item.number}</p>
+              <p className="text-[10px] text-neutral-400 mt-0.5">{item.number}</p>
 
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-1 text-xs font-bold text-white">
@@ -140,7 +130,7 @@ export default function App() {
                   target="_blank"
                   rel="noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs text-neutral-300"
+                  className="p-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-lg text-xs text-white transition-colors"
                 >
                   ↗
                 </a>
@@ -150,15 +140,12 @@ export default function App() {
         ))}
       </main>
 
-      {/* МОДАЛЬНОЕ ОКНО ДЕТАЛЕЙ */}
+      {/* МОДАЛЬНОЕ ОКНО С ИЗОБРАЖЕНИЕМ НА ВЕСЬ БЛОК */}
       {selectedNft && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end justify-center p-0">
           <div className="w-full bg-[#1c1c1e] border-t border-neutral-800 rounded-t-3xl p-5 text-center animate-slide-up">
-            <div 
-              className="w-44 h-44 mx-auto rounded-2xl p-4 flex items-center justify-center mb-4 shadow-2xl relative overflow-hidden"
-              style={{ background: selectedNft.bgPattern }}
-            >
-              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="max-h-full max-w-full object-contain filter drop-shadow-xl z-10" />
+            <div className="w-full h-64 mx-auto rounded-2xl overflow-hidden relative mb-4 border border-neutral-800 shadow-2xl bg-neutral-900">
+              <img src={selectedNft.imageUrl} alt={selectedNft.name} className="w-full h-full object-cover" />
             </div>
 
             <h2 className="text-lg font-bold">{selectedNft.name}</h2>
